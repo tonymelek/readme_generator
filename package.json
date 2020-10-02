@@ -1,0 +1,26 @@
+{
+  "name": "static-site",
+  "version": "1.0.2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tony Melek",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "generate-license-file": "^1.1.0",
+    "generator-license": "^5.4.0",
+    "inquirer": "^6.3.1"
+  },
+  "description": "ReadMe",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "readme_generator"
+  },
+  "keywords": [
+    "readme",
+    "git",
+    "automatic"
+  ]
+}
