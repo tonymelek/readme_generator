@@ -107,7 +107,7 @@ async function init() {
         const responses = await inquirer.prompt(questions)
         //Use user date to write into the README.md
         await asyncWrite(`${responses.Title}.md`, mdWriter(responses))
-        console.log("Successfully wrote README.md");
+        console.log(`${responses.Title}.md  has been successfully generated`);
     }
     //Handle error
     catch (err) {
