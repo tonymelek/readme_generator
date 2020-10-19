@@ -1,0 +1,13 @@
+.card{
+    margin:0 15%;
+}
+.btn-container{
+    display: flex;
+    justify-content: flex-end;
+}
+.btn{
+    display: block;
+}
+.download-link{
+    width: 300px;
+}
