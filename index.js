@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const mdWriter = require('./routes/functions/mdwriter')
 const app = express()
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 
 //Read download.html
 let download;
