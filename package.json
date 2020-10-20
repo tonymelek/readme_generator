@@ -8,10 +8,7 @@
   "author": "Tony Melek",
   "license": "AGPL-3.0",
   "dependencies": {
-    "express": "^4.17.1",
-    "generate-license-file": "^1.1.0",
-    "generator-license": "^5.4.0",
-    "inquirer": "^6.3.1"
+    "express": "^4.17.1"
   },
   "description": "ReadMe",
   "devDependencies": {},

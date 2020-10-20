@@ -1,118 +1,62 @@
-//Required Packages for the app.
-const fs = require("fs")
-const inquirer = require("inquirer")
-const util = require('util')
-//Make write file Async
-const asyncWrite = util.promisify(fs.writeFile);
-// array of questions for user
-const questions = [
-    {
-        message: "Please, Enter your project title",
-        type: "input"
-    },
-    {
-        message: "Please, Enter the project description",
-        type: "input"
-    },
-    {
-        message: "Please, Enter the project's installation procedures",
-        type: "input"
-    },
-    {
-        message: "Please, Enter usage instructions",
-        type: "input"
-    },
-    {
-        message: "Please, Select License Type",
-        type: "list",
-        choices: ["GPL V3", "MIT", "MPL V2"]
-    },
-    {
-        message: "Please, Enter contribution guide for this project",
-        type: "input"
-    },
+const express = require('express')
+const fs = require('fs')
+const path = require('path')
+const mdWriter = require('./routes/functions/mdwriter')
+const app = express()
+const PORT = 5000 || process.env.PORT
 
-    {
-        message: "Please, Enter tests that can be applied to your project",
-        type: "input"
-    },
-    {
-        message: "Please, Enter your e-mail address",
-        type: "input"
-    },
-    {
-        message: "Please, Enter your GitHub username",
-        type: "input",
-        name: "username"
+//Read download.html
+let download;
+fs.readFile(path.join(__dirname, 'public', 'download.html'), 'utf8', (err, data) => {
+    if (err) {
+        console.log(err);
+    } else {
+        download = data
     }
-];
-const tableOfContents = [
-    'Title',
-    'Description',
-    'Installation',
-    'Usage',
-    'License',
-    'Contributing',
-    'Tests',
-    'Questions'
-]
-//Add name to Questions Object
-tableOfContents.forEach((item, index) => {
-    questions[index].name = item
 })
-//Licenses Badges
-const licenses = {
-    "GPL V3": "![License: 'GPL v3'](https://img.shields.io/badge/License-GPLv3-blue.svg)"
 
-    , "MIT": "![License: 'MIT'](https://img.shields.io/badge/License-MIT-yellow.svg)"
+//Handle the Post request and response
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-    , "MPL V2": "![License:'MPL 2.0'](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)"
-}
+//Adding Static Route
+app.use(express.static(path.join(__dirname, 'public')))
 
-// function to write README markdown
-function mdWriter(responses) {
-    return `${licenses[responses.License]}
-# ${responses.Title}
-* [Description](#description)
-* [Installation](#installation)
-* [Usage](#usage)
-* [License](#license)
-* [Contributing](#contributing)
-* [Tests](#tests)
-* [Questions](#questions)
-## Description
-${responses.Description}
-## Installation
-${responses.Installation}
-## Usage
-${responses.Usage}
-## Contributing
-${responses.Contributing}
-## Tests
-${responses.Tests}
-## Questions
-You are welcome to provide any feedback and/or ask questions.
-Please, send any question to my e-mail [${responses.Questions}](mailto:${responses.Questions}) and/or visit my profile on [Github](https://github.com/${responses.username})
+//Adding route for the download page
+app.get('/download', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'download.html'))
+})
+//Adding route for the temp page
+app.get('/temp', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'temp.html'))
+})
 
-## License
-The project is protected under ${responses.License},you may need to read through licens conditions`
-}
+//Adding POST Endpoint
+app.post('/api/generate', (req, res) => {
+    const mdText = mdWriter(req.body)
+
+    fs.writeFile(path.join(__dirname, 'public/output', `README.md`), mdText, err => {
+        if (err) {
+            return console.log(err)
+        }
+        else {
+            let downloadHTML = download
+            downloadHTML = downloadHTML.replace('{{mdFileText}}', mdText)
+            downloadHTML = downloadHTML.replace('{{mdFilePath}}', `./output/README.md`)
+            fs.writeFile(path.join(__dirname, 'public', 'temp.html'), downloadHTML, err => {
+                if (err) {
+                    return console.log(err);
+                } else {
+                    console.log('file generted successfully')
+                    res.redirect('/temp')
+                }
+            })
+
+        }
+    })
+})
 
 
 
-// function to initialize program
-async function init() {
-    try {
-        //Start asking questions to the user
-        const responses = await inquirer.prompt(questions)
-        //Use user date to write into the README.md
-        await asyncWrite(`${responses.Title}.md`, mdWriter(responses))
-        console.log(`${responses.Title}.md  has been successfully generated`);
-    }
-    //Handle error
-    catch (err) {
-        console.log(err)
-    }
-}
-// function call to initialize program
-init();
+//Initialising the server
+app.listen(PORT, () => console.log(`Server is now up and running on port ${PORT}`))
