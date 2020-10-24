@@ -1,0 +1,55 @@
+<h1 class='text-center my-5'>READ ME Generator</h1>
+<div class="card mb-5">
+    <div class="card-header">
+        <h4 class="text-center">Read Me Generator Form</h4>
+    </div>
+    <div class="card-body">
+        <form action="/api/generate" method="post">
+            <div class="form-group">
+                <label for="title">Project Name/Title</label>
+                <input type="text" name='title' class="form-control" id="title">
+            </div>
+            <div class="form-group">
+                <label for="description">Project Description</label>
+                <textarea name='description' class="form-control" id="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="installation">Installation Procedures</label>
+                <textarea name='installation' class="form-control" id="installation"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="usage">Usage Instructions</label>
+                <textarea name='usage' class="form-control" id="usage"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="license">License</label>
+                <select name="license" id="license">
+                    <option value="GPL V3">GPL V3</option>
+                    <option value="MIT">MIT</option>
+                    <option value="MPL V2">MPL V2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contribution">Contribution Guide</label>
+                <textarea name='contribution' class="form-control" id="contribution"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tests">Testing</label>
+                <textarea name='tests' class="form-control" id="tests"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" name='email' class="form-control" id="email">
+            </div>
+            <div class="form-group">
+                <label for="username">GitHub username</label>
+                <input type="text" name='username' class="form-control" id="username">
+            </div>
+            <div class='btn-container'>
+                <button class="btn btn-lg btn-outline-primary" type="submit">Generate Read ME</button>
+            </div>
+        </form>
+    </div>
+</div>
