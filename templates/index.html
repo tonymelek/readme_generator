@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Me Generator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <style>
+        .card {
+            margin: 0 15%;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: block;
+        }
+
+        .download-link {
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <h1 class='text-center my-5'>READ ME Generator</h1>
+        <div class="card mb-5">
+            <div class="card-header">
+                <h4 class="text-center">Read Me Generator Form</h4>
+            </div>
+            <div class="card-body">
+                <form id="submitForm">
+                    <div class="form-group">
+                        <label for="title">Project Name/Title</label>
+                        <input type="text" name='title' class="form-control" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Project Description</label>
+                        <textarea name='description' class="form-control" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="installation">Installation Procedures</label>
+                        <textarea name='installation' class="form-control" id="installation"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="usage">Usage Instructions</label>
+                        <textarea name='usage' class="form-control" id="usage"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="license">License</label>
+                        <select name="license" id="license">
+                            <option value="GPL V3">GPL V3</option>
+                            <option value="MIT">MIT</option>
+                            <option value="MPL V2">MPL V2</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contribution">Contribution Guide</label>
+                        <textarea name='contribution' class="form-control" id="contribution"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="tests">Testing</label>
+                        <textarea name='tests' class="form-control" id="tests"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" name='email' class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">GitHub username</label>
+                        <input type="text" name='username' class="form-control" id="username">
+                    </div>
+                    <div class='btn-container'>
+                        <button class="btn btn-lg btn-outline-primary" type="submit">Generate Read ME</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"
+        integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const submitForm = document.getElementById('submitForm');
+        submitForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const container = document.getElementById('container');
+            const formData = new FormData(e.target);
+            const formProps = Object.fromEntries(formData);
+
+            axios.post(window.location.pathname, formProps).then(res => {
+                container.innerHTML = res.data;
+                const downloadButton = document.getElementById('downloadButton');
+                const mdPart = document.getElementById('mdPart').innerHTML;
+                downloadButton.href = `data:text/plain;charset=utf-8,${encodeURIComponent(mdPart)}`
+                downloadButton.download = 'readme.md';
+            }).catch(err=>console.log(err))
+        });
+
+    </script>
+</body>
+
+</html>

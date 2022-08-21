@@ -1,47 +1,32 @@
-const express = require('express')
-const fs = require('fs')
-const path = require('path')
-const mdWriter = require('./routes/functions/mdwriter')
-const app = express()
-const PORT = process.env.PORT || 5500
-const expbs = require('express-handlebars')
 
-//Identify the use of Handlebars
-app.engine('handlebars', expbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars')
+const fs = require('fs');
+const compiler = require('./utils/handlebars');
+const templates = require('./templates');
+const mdWriter = require('./utils/mdWriter');
 
 
-//Handle the Post request and response
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-//Adding Static Route
-app.use(express.static(path.join(__dirname, 'views')))
-
-//Home Page
-app.get('/', (req, res) => {
-    res.render('index', {
-        'title': 'Home'
-    })
-})
-
-
-//Adding POST Endpoint
-app.post('/api/generate', (req, res) => {
-    const mdText = mdWriter(req.body)
-    res.render('download', {
-        'title': 'Download README',
-        'mdFileText': mdText,
-        'mdFilePath': '../output/README.md'
-    })
-    fs.writeFile(path.join(__dirname, 'views/output', `README.md`), mdText, err => {
-        if (err) {
-            return console.log(err)
+exports.handler = async event => {
+  if(event.httpMethod==='GET'){
+    const homePage = fs.readFileSync('./templates/index.html', 'utf-8');
+    return {
+        statusCode: 200,
+        body: homePage,
+        headers:{
+          'Content-Type':'text/html'
         }
-        console.log('README.md file generted successfully')
-    })
+    };
+    }else if(event.httpMethod==='POST'){
 
-})
-
-//Initialising the server
-app.listen(PORT, () => console.log(`Server is now up and running on port ${PORT}`))
+    const mdText = mdWriter(JSON.parse(event.body))
+    const compile = compiler(templates.download)
+    const message = compile({ 'mdFileText': mdText });
+    return{
+      statusCode:200,
+      body: message,
+      headers:{
+          'Content-Type':'text/html'
+        }
+    }
+    };
+}
