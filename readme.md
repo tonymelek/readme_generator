@@ -14,6 +14,7 @@ The branch jas lambda function serving the readme generator and project can be t
 ## Usage
 - on local just navigate to `http://localhost:5000`
 - on AWS use the deployed API URL
+- check deployed version at <a href="https://dr0wv3ywgc.execute-api.ap-southeast-2.amazonaws.com/dev" target="_blank">AWS API URL</a>
 ## Contributing
 contributions are welcome, open an issue or reach out to my e-mail
 
